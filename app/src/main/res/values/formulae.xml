@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Lists of percentages used to calculate 1RMs
+    Based off three different studies
+    Ref: http://www.exrx.net/Calculators/OneRepMax.html
+    -->
+
+    <!--
+    Because Android is stupid and doesn't allow float arrays in its values for some reason,
+    I have to store these percents as strings then parse them as floats later
+    -->
+    <string-array name="brzycki_formula">
+        <item>Brzycki</item>
+        <item>1</item>
+        <item>.95</item>
+        <item>.9</item>
+        <item>.88</item>
+        <item>.86</item>
+        <item>.83</item>
+        <item>.8</item>
+        <item>.78</item>
+        <item>.76</item>
+        <item>.75</item>
+    </string-array>
+
+    <string-array name="baechle_formula">
+        <item>Baechle</item>
+        <item>1</item>
+        <item>.95</item>
+        <item>.93</item>
+        <item>.9</item>
+        <item>.87</item>
+        <item>.85</item>
+        <item>.83</item>
+        <item>.8</item>
+        <item>.77</item>
+        <item>.75</item>
+    </string-array>
+
+    <string-array name="dosremedios_formula">
+        <item>DosRemedios</item>
+        <item>1</item>
+        <item>.92</item>
+        <item>.90</item>
+        <item>.87</item>
+        <item>.85</item>
+        <item>.82</item>
+        <item></item>
+        <item>.75</item>
+        <item></item>
+        <item>.7</item>
+    </string-array>
+
+    <array name="formulae">
+        <item>@array/brzycki_formula</item>
+        <item>@array/baechle_formula</item>
+        <item>@array/dosremedios_formula</item>
+    </array>
+</resources>
