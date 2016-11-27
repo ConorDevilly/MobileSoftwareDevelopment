@@ -1,18 +1,14 @@
 package com.example.conor.a1rmtracker;
 
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Locale;
+
 
 /**
  * Gets highest 1RMs in each exercise & displays them
@@ -21,9 +17,9 @@ import java.util.ArrayList;
 public class PRsFragment extends HistoryFragment{
 
     String[] from = new String[]{
-            DatabaseHelper.KEY_DATE,
-            DatabaseHelper.KEY_EXERCISE,
-            "MAX(" + DatabaseHelper.KEY_ORM + ")"
+            ExerciseManager.KEY_DATE,
+            ExerciseManager.KEY_EXERCISE,
+            "MAX(" + ExerciseManager.KEY_ORM + ")"
     };
 
     @Override
@@ -35,18 +31,19 @@ public class PRsFragment extends HistoryFragment{
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        db = new DatabaseHelper(getActivity());
+        exMngr = (ExerciseManager) new ExerciseManager(getContext()).openReadable();
         TextView totalText = (TextView) getView().findViewById(R.id.totalView);
         String[] exercises = getActivity().getResources().getStringArray(R.array.exercises);
-        res = db.getPRs(exercises);
+        res = exMngr.getPRs(exercises);
 
         //Calculate users's total
-        int ormCol = res.getColumnIndex("MAX(" + DatabaseHelper.KEY_ORM + ")");
+        int ormCol = res.getColumnIndex("MAX(" + ExerciseManager.KEY_ORM + ")");
         float total = 0;
         while(res.moveToNext()){
             total += res.getFloat(ormCol);
         }
-        totalText.setText(Float.toString(total));
+
+        totalText.setText(String.format(Locale.getDefault(), "%.1f", total));
 
         //Set adapater for list
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(

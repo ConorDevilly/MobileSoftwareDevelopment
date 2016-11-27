@@ -3,7 +3,6 @@ package com.example.conor.a1rmtracker;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,9 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Displays a graph for a given exercise
@@ -27,7 +25,7 @@ import java.util.Date;
  */
 public class GraphFragment extends Fragment {
     GraphView graph;
-    DatabaseHelper db;
+    ExerciseManager exMngr;
     Spinner exercisePicker;
 
     @Override
@@ -35,7 +33,7 @@ public class GraphFragment extends Fragment {
         //Get various variables
         View v = inflater.inflate(R.layout.fragment_graph, container, false);
         graph = (GraphView) v.findViewById(R.id.graph);
-        db = new DatabaseHelper(getActivity());
+        exMngr = (ExerciseManager) new ExerciseManager(getContext()).openReadable();
         exercisePicker = (Spinner) v.findViewById(R.id.exerciseGraphPicker);
 
         ArrayAdapter<CharSequence> exAdapter = ArrayAdapter.createFromResource(
@@ -76,10 +74,10 @@ public class GraphFragment extends Fragment {
         }
 
         //Get exercise from DB
-        Cursor c = db.getAllExercise(exercise);
-        int ormCol = c.getColumnIndex(DatabaseHelper.KEY_ORM);
-        int dateCol = c.getColumnIndex(DatabaseHelper.KEY_DATE);
-        SimpleDateFormat sdf = new SimpleDateFormat(CalcFragment.ENTRY_DATE_FORMAT);
+        Cursor c = exMngr.getAllExercise(exercise);
+        int ormCol = c.getColumnIndex(ExerciseManager.KEY_ORM);
+        int dateCol = c.getColumnIndex(ExerciseManager.KEY_DATE);
+        SimpleDateFormat sdf = new SimpleDateFormat(CalcFragment.ENTRY_DATE_FORMAT, Locale.getDefault());
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
@@ -116,5 +114,13 @@ public class GraphFragment extends Fragment {
 
         //Allow the user to zoom in on a graph
         graph.getViewport().setScalable(true);
+    }
+
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        if(exMngr != null){
+            exMngr.close();
+        }
     }
 }

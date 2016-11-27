@@ -3,17 +3,11 @@ package com.example.conor.a1rmtracker;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -23,7 +17,7 @@ import android.widget.SimpleCursorAdapter;
  */
 
 public class HistoryFragment extends ListFragment {
-    DatabaseHelper db;
+    ExerciseManager exMngr;
     ExerciseComm excomm;
 
     @Override
@@ -32,9 +26,9 @@ public class HistoryFragment extends ListFragment {
     }
 
     String[] from = new String[]{
-            DatabaseHelper.KEY_DATE,
-            DatabaseHelper.KEY_EXERCISE,
-            DatabaseHelper.KEY_ORM
+            ExerciseManager.KEY_DATE,
+            ExerciseManager.KEY_EXERCISE,
+            ExerciseManager.KEY_ORM
     };
     int[] to = new int[]{
             R.id.dateView,
@@ -48,8 +42,8 @@ public class HistoryFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        db = new DatabaseHelper(getActivity());
-        res = db.getAllExerciseLogs();
+        exMngr = (ExerciseManager) new ExerciseManager(getContext()).openReadable();
+        res = exMngr.getAllExerciseLogs();
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 getActivity(),
@@ -81,11 +75,21 @@ public class HistoryFragment extends ListFragment {
         excomm.setExId(res_id);
 
         //Change screen to a calc fragment
-        //TODO: Update selected item on sidebar menu
         CalcFragment calcFragment = new CalcFragment();
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.container, calcFragment, null)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        if(res != null){
+            res.close();
+        }
+        if(exMngr != null){
+            exMngr.close();
+        }
     }
 }
