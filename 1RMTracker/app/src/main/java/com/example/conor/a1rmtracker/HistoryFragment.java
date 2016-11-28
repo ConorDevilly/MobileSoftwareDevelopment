@@ -37,7 +37,6 @@ public class HistoryFragment extends ListFragment {
     };
     Cursor res;
 
-    //TODO: Check lifecycle
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);

@@ -29,8 +29,8 @@ public class DatePickerFragment extends DialogFragment
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day){
         TextView dateText = (TextView) this.getActivity().findViewById(R.id.dateEntry);
-        //TODO: Use resource strings
-        dateText.setText(day + "/" + (month + 1) + "/" + year);
+        String date = day + "/" + (month + 1) + "/" + year;
+        dateText.setText(date);
     }
 }
 //END REFERENCE

@@ -1,13 +1,17 @@
 package com.example.conor.a1rmtracker;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
@@ -35,6 +39,8 @@ public class SettingsFragment extends Fragment {
     ExerciseManager exMngr;
     SharedPreferences prefs;
     String name;
+
+    private static final int PERM_EXTERNAL_STOREAGE = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -163,10 +169,41 @@ public class SettingsFragment extends Fragment {
                 });
                 builder.show();
                 //END REFERENCE
+
+
             }
         });
+
+        //Permissions check if API over 23
+        //REFERENCE: https://developer.android.com/training/permissions/requesting.html
+        Activity a = getActivity();
+        int writePerm = ContextCompat.checkSelfPermission(a, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readPerm =  ContextCompat.checkSelfPermission(a, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (writePerm != PackageManager.PERMISSION_GRANTED
+                || readPerm != PackageManager.PERMISSION_GRANTED){
+
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERM_EXTERNAL_STOREAGE);
+        }
+
         return v;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERM_EXTERNAL_STOREAGE: {
+                if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getContext(),
+                            "ERROR: Importing / exporting will not work without permissions",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+    //END REFERENCE
 
     //REFERENCE: https://developer.android.com/reference/android/os/AsyncTask.html
     private class ExportDB extends AsyncTask<String, Void, Void> {

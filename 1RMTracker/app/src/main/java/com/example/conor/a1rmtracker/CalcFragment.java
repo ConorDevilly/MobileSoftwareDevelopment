@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Fragment used to calculate and store a 1 rep maxes.
+ * Fragment used to calculate and store 1 rep maxes.
  * Created by Conor on 16/11/16.
  */
 public class CalcFragment extends Fragment {
@@ -206,6 +206,7 @@ public class CalcFragment extends Fragment {
     public void calc1RM(){
         this.hideKeyboard();
 
+        //Get values for UI
         enteredReps = (int) repsEntry.getSelectedItem();
         String weightTxt = weightEntry.getText().toString();
 
@@ -369,7 +370,7 @@ public class CalcFragment extends Fragment {
         ex.close();
 
         //Update UI
-        logBtn.setText("UPDATE 1RM");
+        logBtn.setText(getResources().getString(R.string.update1rm));
         delBtn.setVisibility(View.VISIBLE);
         showInputs();
     }

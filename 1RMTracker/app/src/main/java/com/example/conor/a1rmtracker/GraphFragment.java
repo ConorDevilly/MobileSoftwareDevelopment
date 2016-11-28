@@ -94,6 +94,7 @@ public class GraphFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+        c.close();
         sdf.applyPattern("dd/MM");
 
         //Add points to the graph
